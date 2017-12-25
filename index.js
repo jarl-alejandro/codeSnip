@@ -3,6 +3,7 @@ import path from 'path'
 import mongoose from 'mongoose'
 import express from 'express'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
 import { makeExecutableSchema } from 'graphql-tools'
@@ -26,10 +27,15 @@ const schema = makeExecutableSchema({
   resolvers
 })
 
+app.use(cors({
+  origin:["http://localhost:3000"]
+}))
+
 app.use('/graphql', bodyParser.json(), graphqlExpress({
   schema,
   context: { models }
 }))
+
 app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
 
 server.on('request', app)
